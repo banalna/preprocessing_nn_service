@@ -40,7 +40,7 @@ class Config(object):
     # CELERY_RESULT_SERIALIZER = os.environ.get('CELERY_RESULT_SERIALIZER')
     # CELERY_TASK_SERIALIZER = os.environ.get('CELERY_TASK_SERIALIZER')
 
-    CONFIG_FILE_FOR_DETECTOR = f'{basedir}/app/utils/config/haarcascade_frontalface_default.xml'
+    CONFIG_FILE_FOR_DETECTOR = f'{basedir}/'+ os.environ.get('CONFIG_FILE_FOR_DETECTOR')
     ALLOWED_EXTENSIONS_PHOTO = {'png', 'jpg', 'jpeg', 'gif'}
     ALLOWED_HOSTS = ['http://127.0.0.1:5001']
 
