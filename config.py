@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-# from pathlib import Path, PureWindowsPath
 
 
 # for local start
@@ -40,9 +39,7 @@ class Config(object):
     # CELERY_RESULT_SERIALIZER = os.environ.get('CELERY_RESULT_SERIALIZER')
     # CELERY_TASK_SERIALIZER = os.environ.get('CELERY_TASK_SERIALIZER')
 
-    CONFIG_FILE_FOR_DETECTOR = f'{basedir}/'+ os.environ.get('CONFIG_FILE_FOR_DETECTOR')
+    DBLIB_PREDICTOR = f'{basedir}/' + os.environ.get('DBLIB_PREDICTOR')
+    FACE_TEMPLATE_PATH = f'{basedir}/' + os.environ.get('FACE_TEMPLATE_PATH')
     ALLOWED_EXTENSIONS_PHOTO = {'png', 'jpg', 'jpeg', 'gif'}
     ALLOWED_HOSTS = ['http://127.0.0.1:5001']
-
-
-

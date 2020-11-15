@@ -1,46 +1,38 @@
 # -*- coding: utf-8 -*-
+import dlib
+
 import numpy as np
-import cv2
+import skimage.transform as tr
+
+from enum import Enum
+
+
+class FaceDetectorException(Exception):
+    pass
 
 
 class FaceDetector:
-    """
-    Detect faces on the photos
-    """
+    def __init__(self):
+        self.detector = dlib.get_frontal_face_detector()
 
-    def __init__(self, path_to_config):
-        # some fix path
-        import os
-        os.chdir(path_to_config.replace(path_to_config.split('/')[-1], ''))
-        self.face_cascade = cv2.CascadeClassifier(path_to_config.split('/')[-1])
-        self.last_detection = None
+    def detect_faces(self,
+                     image, *,
+                     upscale_factor=1,
+                     greater_than=None,
+                     get_top=None):
+        try:
+            face_rects = list(self.detector(image, upscale_factor))
+        except Exception as e:
+            raise FaceDetectorException(e.args)
 
-    def detect_faces(self, photo) -> (np.ndarray, np.ndarray):
-        """
+        if greater_than is not None:
+            face_rects = list(filter(lambda r:
+                                     r.height() > greater_than and r.width() > greater_than,
+                                     face_rects))
 
-        :param photo: path to photo or ndarray
-        :return: ndarray photo and list of
-        """
-        if type(photo) == str:
-            photo = cv2.imread(photo)
+        face_rects.sort(key=lambda r: r.width() * r.height(), reverse=True)
 
-        gray = cv2.cvtColor(photo, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(
-            gray,
-            scaleFactor=1.2,
-            minNeighbors=5,
-            minSize=(20, 20))
-        self.last_detection = self.__cut_faces(photo, faces)
+        if get_top is not None:
+            face_rects = face_rects[:get_top]
 
-        return self.last_detection
-
-    def __cut_faces(self, photo: np.array, faces: np.array) -> np.array:
-        """
-        By dots cut faces
-        """
-        result = list()
-        for (x, y, w, h) in faces:
-            # cv2.rectangle(photo, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            result.append(photo[y:y + h, x:x + w])
-
-        return np.array(result)
+        return face_rects
